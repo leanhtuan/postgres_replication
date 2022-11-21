@@ -2,6 +2,8 @@
 provider "kubernetes" {
   config_path = "config"
 }
+
+
 resource "kubernetes_config_map" "postgres-master-configmap" {
   metadata {
     name      = "postgres-master-configmap"
