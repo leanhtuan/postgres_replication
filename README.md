@@ -19,3 +19,5 @@ kubectl apply -f pvc-slave.yaml
 kubectl apply -f sync-master-data.yaml
 kubectl create cm postgres-slave-configmap --from-file=slave-config
 kubectl apply -f postgres-slave-sts.yaml
+
+
