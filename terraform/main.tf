@@ -32,10 +32,12 @@ resource "kubernetes_manifest" "statefulset_postgres_master" {
         "spec" = {
           "containers" = [
             {
+              "args" = [
+                "docker-entrypoint.sh -c config_file=/var/config/postgresql.conf -c hba_file=/var/config/pg_hba.conf; su postgres -c \"psql -c \"CREATE ROLE repuser WITH REPLICATION PASSWORD 'postgres' LOGIN;\"\"",
+              ]
               "command" = [
                 "sh",
                 "-c",
-                "docker-entrypoint.sh -c config_file=/var/config/postgresql.conf -c hba_file=/var/config/pg_hba.conf",
               ]
               "envFrom" = [
                 {
@@ -44,7 +46,7 @@ resource "kubernetes_manifest" "statefulset_postgres_master" {
                   }
                 },
               ]
-              "image" = "postgres:11"
+              "image" = "postgres:14"
               "name" = "postgres"
               "ports" = [
                 {
@@ -118,6 +120,7 @@ resource "kubernetes_manifest" "service_postgres_master" {
   }
 }
 
+/*
 
 resource "kubernetes_manifest" "job_sync_master_data" {
   manifest = {
@@ -137,7 +140,7 @@ resource "kubernetes_manifest" "job_sync_master_data" {
                 "-c",
                 "PGPASSWORD=\"postgres\" pg_basebackup -h postgres-master -D /var/lib/slave-postgresql/data -U repuser -vP",
               ]
-              "image" = "postgres:11"
+              "image" = "postgres:14"
               "name" = "sync-master-data"
               "volumeMounts" = [
                 {
@@ -195,7 +198,7 @@ resource "kubernetes_manifest" "statefulset_postgres_slave" {
                   }
                 },
               ]
-              "image" = "postgres:11"
+              "image" = "postgres:14"
               "name" = "postgres"
               "ports" = [
                 {
@@ -259,3 +262,4 @@ resource "kubernetes_manifest" "statefulset_postgres_slave" {
   }
   depends_on = [kubernetes_manifest.statefulset_postgres_slave]
 }
+*/
