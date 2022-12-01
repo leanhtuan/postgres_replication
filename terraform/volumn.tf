@@ -18,7 +18,7 @@ resource "kubernetes_manifest" "persistentvolume_pv_hostpath" {
         "storage" = "5Gi"
       }
       "hostPath" = {
-        "path" = "/var/lib/postgresql/data"
+        "path" = "/var/lib/pgsql/14/data"
       }
       "storageClassName" = "hostpath"
     }
@@ -39,7 +39,7 @@ resource "kubernetes_manifest" "persistentvolume_pv_hostpath2" {
         "storage" = "5Gi"
       }
       "hostPath" = {
-        "path" = "/var/lib/postgresql/data"
+        "path" = "/var/lib/pgsql/14/data"
       }
       "storageClassName" = "hostpath2"
     }
