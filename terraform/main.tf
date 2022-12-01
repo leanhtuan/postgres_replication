@@ -55,7 +55,7 @@ resource "kubernetes_manifest" "statefulset_postgres_master" {
               ]
               "volumeMounts" = [
                 {
-                  "mountPath" = "/var/lib/postgresql/data"
+                  "mountPath" = "/var/lib/pgsql/14/data"
                   "name" = "postgres-data-master"
                 },
                 {
