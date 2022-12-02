@@ -22,7 +22,7 @@ spec:
             - -c
             - "cp /var/config/postgresql.conf /var/lib/pgsql/14/data/postgresql.conf && cp /var/config/recovery.conf /var/lib/pgsql/14/data/recovery.conf"
           volumeMounts:
-            - mountPath: /var/lib/pgsql/14/data
+            - mountPath: /var/lib/postgresql/data
               name: postgres-data
             - mountPath: /var/config/postgresql.conf
               subPath: postgresql.conf
@@ -32,14 +32,14 @@ spec:
               name: postgres-slave-configmap
       containers:
         - name: postgres
-          image: postgres:14
+          image: postgres:11
           ports:
             - containerPort: 5432
           envFrom:
             - configMapRef:
                 name: postgres-password
           volumeMounts:
-            - mountPath: /var/lib/pgsql/14/data
+            - mountPath: /var/lib/postgresql/data
               name: postgres-data
       volumes:
         - name: postgres-slave-configmap

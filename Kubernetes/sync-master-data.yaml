@@ -8,12 +8,12 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: sync-master-data
-          image: postgres:14
+          image: postgres:11
           command:
             [
               "sh",
               "-c",
-              "su postgres -c 'pg_ctl stop --no-wait' && rm -rf /var/lib/slave-postgresql/data && PGPASSWORD='postgres' pg_basebackup -h postgres-master -D /var/lib/slave-postgresql/data -U repuser -vP && su postgres -c 'pg_ctl start'",
+              "PGPASSWORD='postgres' pg_basebackup -h postgres-master -D /var/lib/slave-postgresql/data -U repuser -vP",
             ]
           volumeMounts:
             - mountPath: /var/lib/slave-postgresql/data

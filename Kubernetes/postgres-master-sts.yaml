@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:14
+          image: postgres:11
           command:
             [
               "sh",
@@ -30,7 +30,7 @@ spec:
             - configMapRef:
                 name: postgres-password
           volumeMounts:
-            - mountPath: /var/lib/pgsql/14/data
+            - mountPath: /var/lib/postgresql/data
               name: postgres-data-master
             - mountPath: /var/config
               name: postgres-master-configmap
