@@ -1,6 +1,4 @@
-[Kubernetes Practice - Setup a database master-slave replication with PostgreSQL](https://viblo.asia/p/kubernetes-practice-setup-a-database-master-slave-replication-with-postgresql-924lJB2mlPM)
-
-  kubectl apply -f postgres-password-cm.yaml && kubectl create cm postgres-master-configmap --from-file=config && kubectl create cm postgres-slave-configmap --from-file=slave-config
+kubectl apply -f postgres-password-cm.yaml && kubectl create cm postgres-master-configmap --from-file=config && kubectl create cm postgres-slave-configmap --from-file=slave-config
 kubectl apply -f pv-hostpath.yaml
 
 kubectl apply -f postgres-master-sts.yaml
