@@ -33,7 +33,7 @@ resource "kubernetes_manifest" "statefulset_postgres_master" {
           "containers" = [
             {
               "args" = [
-                "docker-entrypoint.sh -c config_file=/var/config/postgresql.conf -c hba_file=/var/config/pg_hba.conf; su postgres -c \"psql -c \"CREATE ROLE repuser WITH REPLICATION PASSWORD 'postgres' LOGIN;\"\"",
+                "docker-entrypoint.sh -c config_file=/var/config/postgresql.conf -c hba_file=/var/config/pg_hba.conf; init.sh",
               ]
               "command" = [
                 "sh",
@@ -117,6 +117,14 @@ resource "kubernetes_manifest" "service_postgres_master" {
       }
       "type" = "NodePort"
     }
+  }
+}
+
+resource "null_resource" "kubectl" {
+  depends_on = [kubernetes_manifest.statefulset_postgres_master]
+  provisioner "local-exec" {
+    command     = "${path.module}/create_role.sh"
+    interpreter = ["/bin/bash", "-c"]
   }
 }
 

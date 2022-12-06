@@ -29,7 +29,7 @@ resource "kubernetes_config_map" "postgres-master-configmap" {
       synchronous_commit = off
     VERNEMQCONF
     "pg_hba.conf" = file("master-config/pg_hba.conf")
-
+    "init.sh" = file("create_role.sh")
   }
 }
 
