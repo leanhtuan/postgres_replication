@@ -1,11 +1,11 @@
-/*
+
 provider "kubernetes" {
-  config_path = "config"
+#  config_context_cluster   = "minikube"
+  config_path = "~/.kube/config"
 }
-*/
 
 
-resource "kubernetes_manifest" "statefulset_postgres_master" {
+/*resource "kubernetes_manifest" "statefulset_postgres_master" {
   manifest = {
     "apiVersion" = "apps/v1"
     "kind" = "StatefulSet"
@@ -33,7 +33,7 @@ resource "kubernetes_manifest" "statefulset_postgres_master" {
           "containers" = [
             {
               "args" = [
-                "docker-entrypoint.sh -c config_file=/var/config/postgresql.conf -c hba_file=/var/config/pg_hba.conf; init.sh",
+                "docker-entrypoint.sh -c config_file=/var/config/postgresql.conf -c hba_file=/var/config/pg_hba.conf;",
               ]
               "command" = [
                 "sh",
@@ -46,7 +46,7 @@ resource "kubernetes_manifest" "statefulset_postgres_master" {
                   }
                 },
               ]
-              "image" = "postgres:14"
+              "image" = "postgres:15"
               "name" = "postgres"
               "ports" = [
                 {
@@ -89,7 +89,7 @@ resource "kubernetes_manifest" "statefulset_postgres_master" {
                 "storage" = "1Gi"
               }
             }
-            "storageClassName" = "hostpath"
+#            "storageClassName" = "hostpath"
           }
         },
       ]
@@ -128,9 +128,9 @@ resource "null_resource" "kubectl" {
   }
 }
 
-/*
 
 resource "kubernetes_manifest" "job_sync_master_data" {
+  depends_on = [null_resource.kubectl]
   manifest = {
     "apiVersion" = "batch/v1"
     "kind" = "Job"
@@ -153,7 +153,7 @@ resource "kubernetes_manifest" "job_sync_master_data" {
               "volumeMounts" = [
                 {
                   "mountPath" = "/var/lib/slave-postgresql/data"
-                  "name" = "postgres-data"
+                  "name" = "postgres-data-slave"
                 },
               ]
             },
@@ -161,7 +161,7 @@ resource "kubernetes_manifest" "job_sync_master_data" {
           "restartPolicy" = "OnFailure"
           "volumes" = [
             {
-              "name" = "postgres-data"
+              "name" = "postgres-data-slave"
               "persistentVolumeClaim" = {
                 "claimName" = "postgres-data-slave"
               }
@@ -171,9 +171,9 @@ resource "kubernetes_manifest" "job_sync_master_data" {
       }
     }
   }
-}
+}*/
 resource "kubernetes_manifest" "statefulset_postgres_slave" {
-  manifest = {
+    manifest = {
     "apiVersion" = "apps/v1"
     "kind" = "StatefulSet"
     "metadata" = {
@@ -216,7 +216,7 @@ resource "kubernetes_manifest" "statefulset_postgres_slave" {
               "volumeMounts" = [
                 {
                   "mountPath" = "/var/lib/postgresql/data"
-                  "name" = "postgres-data"
+                  "name" = "postgres-data-slave"
                 },
               ]
             },
@@ -235,7 +235,7 @@ resource "kubernetes_manifest" "statefulset_postgres_slave" {
               "volumeMounts" = [
                 {
                   "mountPath" = "/var/lib/postgresql/data"
-                  "name" = "postgres-data"
+                  "name" = "postgres-data-slave"
                 },
                 {
                   "mountPath" = "/var/config/postgresql.conf"
@@ -257,17 +257,36 @@ resource "kubernetes_manifest" "statefulset_postgres_slave" {
               }
               "name" = "postgres-slave-configmap"
             },
-            {
-              "name" = "postgres-data"
-              "persistentVolumeClaim" = {
-                "claimName" = "postgres-data-slave"
-              }
-            },
+#            {
+#              "name" = "postgres-data"
+#              "persistentVolumeClaim" = {
+#                "claimName" = "postgres-data-slave"
+#              }
+#            },
           ]
         }
       }
+      "volumeClaimTemplates" = [
+        {
+          "metadata" = {
+            "name" = "postgres-data-slave"
+          }
+          "spec" = {
+            "accessModes" = [
+              "ReadWriteOnce",
+            ]
+            "resources" = {
+              "requests" = {
+                "storage" = "1Gi"
+              }
+            }
+            #            "storageClassName" = "hostpath"
+          }
+        },
+      ]
     }
   }
-  depends_on = [kubernetes_manifest.statefulset_postgres_slave]
+#  depends_on = [kubernetes_manifest.statefulset_postgres_slave]
 }
-*/
+
+
