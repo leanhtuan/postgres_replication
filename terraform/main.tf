@@ -95,8 +95,7 @@ provider "kubernetes" {
       ]
     }
   }
-}
-
+}*/
 resource "kubernetes_manifest" "service_postgres_master" {
   manifest = {
     "apiVersion" = "v1"
@@ -171,7 +170,9 @@ resource "kubernetes_manifest" "job_sync_master_data" {
       }
     }
   }
-}*/
+}
+/*
+
 resource "kubernetes_manifest" "statefulset_postgres_slave" {
     manifest = {
     "apiVersion" = "apps/v1"
@@ -215,7 +216,7 @@ resource "kubernetes_manifest" "statefulset_postgres_slave" {
               ]
               "volumeMounts" = [
                 {
-                  "mountPath" = "/var/lib/postgresql/data"
+                  "mountPath" = "/var/lib/pgsql/14/data"
                   "name" = "postgres-data-slave"
                 },
               ]
@@ -226,7 +227,7 @@ resource "kubernetes_manifest" "statefulset_postgres_slave" {
               "command" = [
                 "sh",
                 "-c",
-                "cp /var/config/postgresql.conf /var/lib/postgresql/data/postgresql.conf && cp /var/config/recovery.conf /var/lib/postgresql/data/recovery.conf && to && echo 'helloworld'",
+                "cp /var/config/postgresql.conf /var/lib/postgresql/data/postgresql.conf && cp /var/config/recovery.conf /var/lib/postgresql/data/recovery.conf",
               ]
 #              "args":
 
@@ -234,7 +235,7 @@ resource "kubernetes_manifest" "statefulset_postgres_slave" {
               "name" = "busybox"
               "volumeMounts" = [
                 {
-                  "mountPath" = "/var/lib/postgresql/data"
+                  "mountPath" = "/var/lib/pgsql/14/data"
                   "name" = "postgres-data-slave"
                 },
                 {
@@ -288,5 +289,6 @@ resource "kubernetes_manifest" "statefulset_postgres_slave" {
   }
 #  depends_on = [kubernetes_manifest.statefulset_postgres_slave]
 }
+*/
 
 
