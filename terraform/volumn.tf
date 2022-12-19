@@ -15,7 +15,7 @@ resource "kubernetes_manifest" "persistentvolume_pv_hostpath" {
         "ReadWriteOnce",
       ]
       "capacity" = {
-        "storage" = "5Gi"
+        "storage" = "2Gi"
       }
       "hostPath" = {
         "path" = "/var/lib/postgresql/data"
@@ -24,6 +24,29 @@ resource "kubernetes_manifest" "persistentvolume_pv_hostpath" {
     }
   }
 }
+
+/*resource "kubernetes_manifest" "persistentvolume_pv_hostpath2" {
+  manifest = {
+    "apiVersion" = "v1"
+    "kind" = "PersistentVolume"
+    "metadata" = {
+      "name" = "pv-hostpath"
+    }
+    "spec" = {
+      "accessModes" = [
+        "ReadWriteOnce",
+      ]
+      "capacity" = {
+        "storage" = "2Gi"
+      }
+      "hostPath" = {
+        "path" = "/var/lib/postgresql/data"
+      }
+      "storageClassName" = "hostpath2"
+    }
+  }
+}*/
+
 resource "kubernetes_manifest" "persistentvolume_pv_hostpath2" {
   manifest = {
     "apiVersion" = "v1"
@@ -63,7 +86,7 @@ resource "kubernetes_manifest" "persistentvolumeclaim_postgres_data_slave" {
           "storage" = "1Gi"
         }
       }
-      "storageClassName" = "hostpath2"
+      "storageClassName" = "hostpath"
     }
   }
 }

@@ -118,8 +118,16 @@ resource "kubernetes_manifest" "service_postgres_master" {
   }
 }
 
+resource "null_resource" "kubectl" {
+  depends_on = [kubernetes_manifest.statefulset_postgres_master]
+  provisioner "local-exec" {
+    command     = "${path.module}/create_role.sh"
+    interpreter = ["bash", "-c"]
+  }
+}
 
 resource "kubernetes_manifest" "job_sync_master_data" {
+  depends_on = [kubernetes_manifest.job_sync_master_data]
   manifest = {
     "apiVersion" = "batch/v1"
     "kind" = "Job"
@@ -215,7 +223,7 @@ resource "kubernetes_manifest" "statefulset_postgres_slave" {
               "command" = [
                 "sh",
                 "-c",
-                "cp /var/config/postgresql.conf /var/lib/postgresql/data/postgresql.conf && cp /var/config/recovery.conf /var/lib/postgresql/data/recovery.conf && to && echo 'helloworld'",
+                "cp /var/config/postgresql.conf /var/lib/postgresql/data/postgresql.conf && cp /var/config/recovery.conf /var/lib/postgresql/data/recovery.conf;",
               ]
 #              "args":
 
@@ -257,5 +265,5 @@ resource "kubernetes_manifest" "statefulset_postgres_slave" {
       }
     }
   }
-  depends_on = [kubernetes_manifest.statefulset_postgres_slave]
+  depends_on = [kubernetes_manifest.job_sync_master_data]
 }
