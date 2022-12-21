@@ -59,7 +59,7 @@ resource "kubernetes_manifest" "persistentvolume_pv_hostpath2" {
         "ReadWriteOnce",
       ]
       "capacity" = {
-        "storage" = "5Gi"
+        "storage" = "2Gi"
       }
       "hostPath" = {
         "path" = "/var/lib/postgresql/data"

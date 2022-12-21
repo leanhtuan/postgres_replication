@@ -1,3 +1,7 @@
 /terraform/.terraform.lock.hcl
 /terraform/terraform.tfstate
 /terraform/terraform.tfstate.backup
+/terraform/logs/describe_pod_master_postgres.txt
+/terraform/.terraform/providers/registry.terraform.io/hashicorp/null/3.2.1/windows_amd64/terraform-provider-null_v3.2.1_x5.exe
+/terraform/.terraform/providers/registry.terraform.io/hashicorp/kubernetes/2.16.1/windows_amd64/terraform-provider-kubernetes_v2.16.1_x5.exe
+/terraform/logs/logs_pod_master_postgres.txt
