@@ -87,7 +87,7 @@ resource "kubernetes_manifest" "statefulset_postgres_master" {
                 "storage" = "1Gi"
               }
             }
-            "storageClassName" = "hostpath"
+#            "storageClassName" = "hostpath"
           }
         },
       ]
@@ -126,6 +126,7 @@ resource "null_resource" "kubectl" {
   }
 }
 
+
 resource "kubernetes_manifest" "job_sync_master_data" {
   depends_on = [kubernetes_manifest.job_sync_master_data]
   manifest = {
@@ -143,7 +144,7 @@ resource "kubernetes_manifest" "job_sync_master_data" {
               "command" = [
                 "sh",
                 "-c",
-                "PGPASSWORD=\"postgres\" pg_basebackup -h postgres-master -D /var/lib/slave-postgresql/data -U repuser -vP",
+                "PGPASSWORD='postgres' pg_basebackup -h postgres-master -D /var/lib/slave-postgresql/data -U repuser -vP",
               ]
               "image" = "postgres:11"
               "name" = "sync-master-data"
@@ -169,6 +170,7 @@ resource "kubernetes_manifest" "job_sync_master_data" {
     }
   }
 }
+
 resource "kubernetes_manifest" "statefulset_postgres_slave" {
   manifest = {
     "apiVersion" = "apps/v1"
@@ -224,6 +226,7 @@ resource "kubernetes_manifest" "statefulset_postgres_slave" {
                 "sh",
                 "-c",
                 "cp /var/config/postgresql.conf /var/lib/postgresql/data/postgresql.conf && cp /var/config/recovery.conf /var/lib/postgresql/data/recovery.conf;",
+#                "echo 'hello'",
               ]
 #              "args":
 
@@ -263,7 +266,25 @@ resource "kubernetes_manifest" "statefulset_postgres_slave" {
           ]
         }
       }
+      "volumeClaimTemplates" = [
+        {
+          "metadata" = {
+            "name" = "postgres-data-slave"
+          }
+          "spec" = {
+            "accessModes" = [
+              "ReadWriteOnce",
+            ]
+            "resources" = {
+              "requests" = {
+                "storage" = "1Gi"
+              }
+            }
+#            "storageClassName" = "hostpath"
+          }
+        },
+      ]
     }
   }
-  depends_on = [kubernetes_manifest.job_sync_master_data]
+#  depends_on = [kubernetes_manifest.job_sync_master_data]
 }
